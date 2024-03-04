@@ -1,8 +1,9 @@
 const canvas = document.getElementById('tetris');
+canvas.width = 1200; // Set the width to 800 pixels
+canvas.height = 600; // Set the height to 1000 pixels
 const context = canvas.getContext('2d');
-
-context.scale(20, 20);
-
+let unit=15;
+context.scale(unit, unit); // Set the scale so that each game unit is 100 pixels
 function arenaSweep() {
     outer: for (let y = arena.length -1; y > 0; --y) {
         for (let x = 0; x < arena[y].length; ++x) {
@@ -14,6 +15,10 @@ function arenaSweep() {
         const row = arena.splice(y, 1)[0].fill(0);
         arena.unshift(row);
         ++y;
+
+        // Decrease the unit by 1 each time a row is completed
+        
+        
     }
 }
 
@@ -185,7 +190,7 @@ function rotate(matrix, dir) {
 }
 
 let dropCounter = 0;
-let dropInterval = 500;
+let dropInterval = 1000;
 
 let lastTime = 0;
 function update(time = 0) {
@@ -217,13 +222,15 @@ const colors = [
     '#3877FF',
 ];
 
-const arena = createMatrix(12, 20);
+const arena = createMatrix((canvas.width/unit), canvas.height/unit); // Create a 10x8 unit arena
 
 const player = {
     pos: {x: 0, y: 0},
     matrix: null,
     score: 0,
 };
+
+let isUpKeyPressed = false;
 
 document.addEventListener('keydown', event => {
     if (event.keyCode === 37) {
@@ -233,6 +240,7 @@ document.addEventListener('keydown', event => {
     } else if (event.keyCode === 40) {
         playerDrop();
     } else if (event.keyCode === 38) { // Up arrow key
+        isUpKeyPressed = true;
         player.pos.y--; // Move the object up
         if (collide(arena, player)) {
             player.pos.y++; // If there's a collision, move it back down
@@ -243,6 +251,27 @@ document.addEventListener('keydown', event => {
         playerRotate(1);
     }
 });
+
+document.addEventListener('keyup', event => {
+    if (event.keyCode === 38) { // Up arrow key
+        isUpKeyPressed = false;
+    }
+});
+
+function playerDrop() {
+    if (isUpKeyPressed) {
+        return;
+    }
+    player.pos.y++;
+    if (collide(arena, player)) {
+        player.pos.y--;
+        merge(arena, player);
+        playerReset();
+        arenaSweep();
+        updateScore();
+    }
+    dropCounter = 0;
+}
 
 playerReset();
 updateScore();
