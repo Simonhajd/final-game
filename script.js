@@ -2,8 +2,9 @@ const canvas = document.getElementById('tetris');
 canvas.width = 600; // Set the width to 800 pixels
 canvas.height = 1200; // Set the height to 1000 pixels
 const context = canvas.getContext('2d');
-let unit=15;
+let unit=10;
 context.scale(unit, unit); // Set the scale so that each game unit is 100 pixels
+
 function arenaSweep() {
     outer: for (let y = arena.length -1; y > 0; --y) {
         for (let x = 0; x < arena[y].length; ++x) {
@@ -15,10 +16,6 @@ function arenaSweep() {
         const row = arena.splice(y, 1)[0].fill(0);
         arena.unshift(row);
         ++y;
-
-        // Decrease the unit by 1 each time a row is completed
-        
-        
     }
 }
 
@@ -227,7 +224,6 @@ const arena = createMatrix((canvas.width/unit), canvas.height/unit); // Create a
 const player = {
     pos: {x: 0, y: 0},
     matrix: null,
-    score: 0,
 };
 
 let isUpKeyPressed = false;
@@ -268,11 +264,9 @@ function playerDrop() {
         merge(arena, player);
         playerReset();
         arenaSweep();
-        updateScore();
     }
     dropCounter = 0;
 }
 
 playerReset();
-updateScore();
 update();
