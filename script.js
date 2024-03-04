@@ -1,6 +1,6 @@
 const canvas = document.getElementById('tetris');
-canvas.width = 600; // Set the width to 800 pixels
-canvas.height = 1200; // Set the height to 1000 pixels
+canvas.width = 300; // Set the width to 800 pixels
+canvas.height = 600; // Set the height to 1000 pixels
 const context = canvas.getContext('2d');
 let unit=10;
 context.scale(unit, unit); // Set the scale so that each game unit is 100 pixels
